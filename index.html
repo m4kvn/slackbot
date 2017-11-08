@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <style type="text/css">
+        body {
+            padding: 16px;
+        }
+
+        button {
+            margin-top: 8px;
+        }
+
+        input {
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <input id="token-input" type="text" class="form-control" placeholder="トークンを入力">
+    <button id="token-submit" type="button" class="btn btn-default" onclick="update()">更新</button>
+    <label>
+        <select id="bot-select" class="selectpicker"></select>
+    </label>
+    <label>
+        <select id="channel-select" class="selectpicker"></select>
+    </label>
+    <input id="post_input_pre" type="text" class="form-control" placeholder="文字列を入力">
+    <button id="post_submit_pre" type="button" class="btn btn-default" onclick="postMessage()">送信</button>
+</div>
+
+<script type="text/javascript">
+    var token = null;
+    var bots = null;
+    var channels = null;
+
+    var update = function () {
+        token = document.getElementById("token-input").value;
+        getBots();
+        getChannels();
+    };
+
+    var requestAjax = function (endpoint, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                callback(this.response);
+            }
+        };
+        xhr.responseType = 'json';
+        xhr.open('GET', endpoint, true);
+        xhr.send();
+    };
+
+    var getBots = function () {
+        var endpoint = "https://slack.com/api/users.list?" + "token=" + token;
+        requestAjax(endpoint, function (res) {
+            bots = res["members"].filter(function (value) {
+                return value["is_bot"] && !value["deleted"];
+            });
+            console.log(res);
+            console.log(bots);
+            bots.forEach(function (value) {
+                $("#bot-select").append("<option>" + value.name + "</option>");
+            })
+        });
+    };
+
+    var getChannels = function () {
+        var endpoint = "https://slack.com/api/channels.list?token=" + token;
+        requestAjax(endpoint, function (res) {
+            channels = res["channels"];
+            console.log(channels);
+            channels.forEach(function (value) {
+                $("#channel-select").append("<option>" + value.name + "</option>");
+            });
+        });
+    };
+
+    var postMessage = function () {
+        var botName = document.getElementById("bot-select").value;
+        var channelName = document.getElementById("channel-select").value;
+        var inputText = document.getElementById("post_input_pre").value;
+        var bot = bots.find(function (value) {
+            return value.name == botName;
+        });
+        var channel = channels.find(function (value) {
+            return value.name == channelName;
+        });
+        inputText = inputText.replace(/(@[\S]+)/g, "<$1>");
+        var endpoint = "https://slack.com/api/chat.postMessage?"
+            + "token=" + token
+            + "&channel=" + channel.id
+            + "&text=" + inputText
+            + "&icon_url=" + bot["profile"]["image_32"]
+            + "&username=" + bot["real_name"];
+        console.log(endpoint);
+        requestAjax(endpoint, function (res) {
+            console.log(res);
+        });
+    };
+
+</script>
+
+</body>
+</html>
