@@ -26,27 +26,47 @@
         }
 
         button {
-            margin-top: 8px;
+            margin-top: 16px;
         }
 
         input {
-            margin-top: 8px;
+            margin-top: 16px;
+        }
+
+        select {
+            margin-top: 16px;
+            margin-right: 8px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <input id="token-input" type="text" class="form-control" placeholder="トークンを入力">
-    <button id="token-submit" type="button" class="btn btn-default" onclick="update()">更新</button>
-    <label>
-        <select id="bot-select" class="selectpicker"></select>
-    </label>
-    <label>
-        <select id="channel-select" class="selectpicker"></select>
-    </label>
-    <input id="post_input_pre" type="text" class="form-control" placeholder="文字列を入力">
-    <button id="post_submit_pre" type="button" class="btn btn-default" onclick="postMessage()">送信</button>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="header"><h1>miraibot</h1></div>
+            <p>ボットのトークンを入力して更新すると、ボット一覧とチャンネル一覧がでます。</p>
+            <p>ボットとチャンネルを選択してメッセージを送信しましょう。</p>
+            <div class="input-group">
+                <input id="token-input" type="text" class="form-control" placeholder="トークンを入力">
+                <span class="input-group-btn">
+            <button id="token-submit" type="button" class="btn btn-default" onclick="update()">更新</button>
+        </span>
+            </div>
+            <label>
+                <select id="bot-select" class="selectpicker"></select>
+            </label>
+            <label>
+                <select id="channel-select" class="selectpicker"></select>
+            </label>
+            <div class="input-group">
+                <input id="post_input_pre" type="text" class="form-control" placeholder="文字列を入力">
+                <span class="input-group-btn">
+            <button id="post_submit_pre" type="button" class="btn btn-default" onclick="postMessage()">送信</button>
+        </span>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
