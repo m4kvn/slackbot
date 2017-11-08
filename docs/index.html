@@ -70,12 +70,13 @@
 </div>
 
 <script type="text/javascript">
-    var token = null;
+    var token = localStorage.getItem('token');
     var bots = null;
     var channels = null;
 
     var update = function () {
         token = document.getElementById("token-input").value;
+        localStorage.setItem('token', token);
         getBots();
         getChannels();
     };
@@ -139,6 +140,12 @@
             console.log(res);
         });
     };
+
+    if (token) {
+        document.getElementById("token-input").value = token;
+        getBots();
+        getChannels();
+    }
 
 </script>
 
