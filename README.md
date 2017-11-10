@@ -1,6 +1,6 @@
-# miraibot
+# slackbot
 
 ボットに喋らせるためのサイトです。
 
-https://miraikeitai2017.github.io/miraibot/
+https://manohito.github.io/slackbot/
 
